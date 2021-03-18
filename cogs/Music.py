@@ -14,11 +14,17 @@ class Music(commands.Cog):
 		if(ctx.author.bot):return
 		if(ctx.voice_client is None):
 			return
+		if(len(args)==0):
+			if(ctx.voice_client.is_paused()):
+				ctx.voice_client.resume()
+				return
+			else:
+				await ctx.send(embed=Message.invalidName(ctx.author,ctx.guild))
 		url="".join(args)
 		async with ctx.typing():
 			res=await YT.grab(url,self.bot.database,ctx.guild.id,self.bot.musicopts['ytdl_opts'],self.bot.loop)
 		if(res is None):
-			await ctx.send(embed=Message.invalidLink(ctx.author,ctx.guild))
+			await ctx.send(embed=Message.invalidName(ctx.author,ctx.guild))
 			return
 		if(res is False):
 			await ctx.send(embed=Message.Error(ctx.author,ctx.guild))
@@ -73,11 +79,13 @@ class Music(commands.Cog):
 	@commands.command()
 	async def move(self,ctx):
 		if(ctx.author.bot):return
-		if(ctx.author.voice is None):
+		elif(ctx.author.voice is None):
 			await ctx.send(embed=Message.userNotConnected(ctx.author,ctx.guild))
 			return
-		if(ctx.voice_client is None):
+		elif(ctx.voice_client is None):
 			await ctx.author.voice.connect()
+		elif(ctx.voice_client.channel==ctx.author.voice.channel):
+			return
 		else:
 			await ctx.voice_client.move_to(ctx.author.voice.channel)
 
@@ -89,9 +97,12 @@ class Music(commands.Cog):
 	# 	if data is None:
 	# 		await ctx.send(embed=Message.foundNothing(ctx.author,ctx.guild,res))
 	# 		return
+
 		
 	async def done(self,ctx):
 		song=self.bot.database.get_song(ctx.guild.id)
+		if ctx.voice_client is None:
+			return
 		if song is None:
 			await ctx.send(embed=Message.queueEmpty(ctx.guild))
 			await ctx.voice_client.disconnect()
@@ -106,7 +117,7 @@ class Music(commands.Cog):
 		if(user.id==self.bot.user.id and after.channel is None):
 			self.bot.database.removeQueue(user.guild.id)
 			return
-		if(len(before.channel.members)==1):
+		if(len(after.channel.members)==1):
 			for i in self.bot.voice_clients:
 				if(i.guild==user.guild):
 					self.bot.database.removeQueue(i.guild.id)
@@ -135,7 +146,7 @@ class Music(commands.Cog):
 			await ctx.send(embed=Message.nothingPlaying(ctx.author,ctx.guild))
 			return
 		source=ctx.voice_client.source
-		await ctx.send(embed=Message.NowPlaying(ctx.author,ctx.guild,source.artists,source.track.source.YTurl))
+		await ctx.send(embed=Message.NowPlaying(ctx.author,ctx.guild,source.artist,source.track,source.YTurl))
 	@commands.command()
 	@play.before_invoke
 	async def join(self,ctx):

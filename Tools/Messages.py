@@ -96,3 +96,7 @@ class Message:
         else:
             e.description='Added {} Songs to The Queue.'.format(num)
         return e
+    @staticmethod
+    def invalidName(author,guild):
+        e=Message.getDefault(author,guild)
+        e.description='Please Enter Some Valid Song Name or URL.'

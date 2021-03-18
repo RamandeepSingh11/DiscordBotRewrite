@@ -1,7 +1,9 @@
 import discord,os,json
 from SQLite import DataBase
 from discord.ext import commands
-bot=commands.Bot(command_prefix=commands.when_mentioned_or('!'))
+intents = discord.Intents.default()
+intents.members = True
+bot=commands.Bot(command_prefix=commands.when_mentioned_or('!'),intents=intents)
 @bot.event
 async def on_ready():
     print('Logged in as {0} ({0.id})'.format(bot.user))
