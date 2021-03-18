@@ -100,3 +100,4 @@ class Message:
     def invalidName(author,guild):
         e=Message.getDefault(author,guild)
         e.description='Please Enter Some Valid Song Name or URL.'
+        return e

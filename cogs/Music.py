@@ -17,9 +17,9 @@ class Music(commands.Cog):
 		if(len(args)==0):
 			if(ctx.voice_client.is_paused()):
 				ctx.voice_client.resume()
-				return
 			else:
 				await ctx.send(embed=Message.invalidName(ctx.author,ctx.guild))
+			return
 		url="".join(args)
 		async with ctx.typing():
 			res=await YT.grab(url,self.bot.database,ctx.guild.id,self.bot.musicopts['ytdl_opts'],self.bot.loop)
