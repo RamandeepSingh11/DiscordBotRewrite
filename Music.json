@@ -1,0 +1,18 @@
+{
+    "ytdl_opts" : {
+        "format": "bestaudio/best",
+        "outtmpl": "%(extractor)s-%(id)s-%(title)s.%(ext)s",
+        "restrictfilenames": true,
+        "noplaylist": true,
+        "nocheckcertificate": true,
+        "ignoreerrors": false,
+        "logtostderr": false,
+        "quiet": true,
+        "no_warnings": true,
+        "default_search": "auto",
+        "source_address": "0.0.0.0"
+    },
+    "ffmpeg_opts" : {
+        "options": "-vn"
+    }
+}
